@@ -1,0 +1,104 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  models.Address:
+    properties:
+      city:
+        type: string
+      geo_lat:
+        type: string
+      geo_lon:
+        type: string
+      house:
+        type: string
+      street:
+        type: string
+    type: object
+  models.GeocodeRequest:
+    properties:
+      lat:
+        type: number
+      lon:
+        type: number
+    type: object
+  models.GeocodeResponse:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/models.Address'
+        type: array
+    type: object
+  models.SearchRequest:
+    properties:
+      query:
+        type: string
+    type: object
+  models.SearchResponse:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/models.Address'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: slavalomov.4@gmail.com
+    name: Вячеслав
+  description: Данный сервис предоставляент возможность поиска информации об адресе,
+    по его фактическом адресу или геолокации.
+  title: Поиск данных адреса
+  version: "1.0"
+paths:
+  /api/address/geocode:
+    post:
+      description: Поиск информации об адресе по его геолокационным данным.
+      parameters:
+      - description: координаты
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.GeocodeRequest'
+      responses:
+        "200":
+          description: информация об адресе
+          schema:
+            $ref: '#/definitions/models.GeocodeResponse'
+        "400":
+          description: 400 :Неверный формат запроса
+          schema:
+            type: string
+        "500":
+          description: '500: Сервис dadata.ru не доступен'
+          schema:
+            type: string
+      summary: Получение данных адреса.
+  /api/address/search:
+    post:
+      description: Поиск информации об адресе по его фактическому адресу
+      parameters:
+      - description: фактический адрес
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.SearchRequest'
+      responses:
+        "200":
+          description: информация об адресе
+          schema:
+            $ref: '#/definitions/models.SearchResponse'
+        "400":
+          description: 400 :Неверный формат запроса
+          schema:
+            type: string
+        "500":
+          description: '500: Сервис dadata.ru не доступен'
+          schema:
+            type: string
+      summary: Получение данных адреса
+produces:
+- application/json
+swagger: "2.0"
